@@ -1,0 +1,15 @@
+id: ""                     # e.g. 2026-07-14-checkout-retry
+title: ""
+status: requested          # see WORKFLOW.md state table for the full list
+owner: orchestrator        # agent or "human" currently responsible
+resume_state: ""           # only set when status is "blocked"
+blocked_question: ""       # only set when status is "blocked"
+history:
+  # - timestamp: 2026-07-14T10:00:00Z
+  #   agent: delivery-planner
+  #   from_status: discovery
+  #   to_status: requirement_draft
+  #   note: one line on what changed
+links:
+  pr: ""
+  branch: ""
