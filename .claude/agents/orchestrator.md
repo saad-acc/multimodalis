@@ -45,9 +45,14 @@ Rules:
    question and the `resume_state` in `item.yaml`, and stop — don't guess the
    answer yourself.
 4. After a dispatched agent finishes, update `item.yaml`: new status, a
-   one-line history entry (who ran, what changed, timestamp), and stop. Let
-   the next invocation pick up the next state — don't chain multiple states
-   in one turn.
+   one-line history entry (who ran, what changed, timestamp). Then check the
+   new status: if it's an **agent-owned** state (anything but
+   `business_clarification`, `blocked`, or `verification` pending human
+   acceptance), immediately dispatch the next agent in the same turn — keep
+   chaining. Only stop when you land on one of those three human-owned
+   states, or on `done`. There is no human review point between agent-owned
+   states in this design, so pausing there would just be friction, not a
+   checkpoint.
 5. If `verification` reports failure, read *why* it failed before choosing
    the rework target: a failing test/build/lint goes back to
    `implementation`; a plan that was architecturally wrong goes back to

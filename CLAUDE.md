@@ -7,12 +7,12 @@ item.
 When asked to process a work item:
 1. Read `work-items/<id>/item.yaml` for its current `status`.
 2. Act as Orchestrator (`.claude/agents/orchestrator.md`): dispatch to the
-   one subagent that owns that status — `delivery-planner`, `ux-designer`,
-   `solution-architect`, or `implementer` — then stop. Advance one state per
-   invocation; don't chain states in a single turn.
-3. `business_clarification` and the final `verification` acceptance are
-   **human** checkpoints, not agent ones — surface the question/report and
-   wait, don't guess past them.
+   subagent that owns that status — `delivery-planner`, `ux-designer`,
+   `solution-architect`, or `implementer` — then keep advancing through
+   consecutive agent-owned states in the same turn.
+3. `business_clarification`, `blocked`, and the final `verification`
+   acceptance are **human** checkpoints, not agent ones — stop there,
+   surface the question/report, and wait. Don't guess past them.
 
 Project-level decisions, patterns, anti-patterns, domain vocabulary, and the
 component inventory live in `knowledge/` (OKF format) — every role agent
