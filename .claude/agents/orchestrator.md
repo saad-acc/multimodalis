@@ -45,7 +45,7 @@ Routing table (see WORKFLOW.md for the full state machine and rework rules):
 | `architecture_input` | solution-architect | `implementation_plan` |
 | `implementation_plan` | delivery-planner | `implementation` |
 | `implementation` | implementer | `verification` |
-| `verification` | implementer (self-check), then wait for human acceptance | `done`, or `implementation` / `architecture_input` / `ux_input` on failure |
+| `verification` | implementer (self-check), then wait for human acceptance | `done`, or `implementation` / `architecture_input` / `ux_input` / `discovery` on failure |
 | `blocked` | — (wait for a human to answer in `clarifications.md`) | whatever `resume_state` says |
 | `done` | confirm the documentation hygiene checklist in `verification-report.md` is all `done`/`n/a` (not blank) — if not, send it back to `verification` instead of closing | terminal |
 
@@ -70,7 +70,12 @@ Rules:
 5. If `verification` reports failure, read *why* it failed before choosing
    the rework target: a failing test/build/lint goes back to
    `implementation`; a plan that was architecturally wrong goes back to
-   `architecture_input`; a UX mismatch goes back to `ux_input`.
+   `architecture_input`; a UX mismatch goes back to `ux_input`; the
+   underlying requirement/scope itself being incomplete or wrong — not a
+   code, design, or UX defect — goes back to `discovery`, so Delivery
+   Planner can refine what's needed (differently, or additionally) given
+   what's already been implemented. A work item never just sits in
+   `verification` when more work is needed — pick the target and dispatch.
 6. Closing a `done` item is a check, not a judgment call: if any hygiene
    checklist row in `verification-report.md` is missing or unmarked, that's
    a bug in `verification`, not something you fix yourself — send it back

@@ -58,9 +58,15 @@ Given the code changes plus `architecture.md` and `ux-spec.md`, produce
    - `knowledge/log.md` has an entry for every promotion made this item.
    Record each item as done/n-a in `verification-report.md` — most items
    will be n/a, this is a check, not busywork to manufacture.
-4. **Verdict**: pass, or fail-with-target — if automated checks failed, target
-   is `implementation` (fix the code); if the *design* was wrong, target is
-   `architecture_input`; if the *UX spec* was wrong, target is `ux_input`.
+4. **Verdict**: pass, or fail-with-target:
+   - Automated checks failed → `implementation` (fix the code).
+   - The *design* was wrong → `architecture_input`.
+   - The *UX spec* was wrong → `ux_input`.
+   - The *requirement/scope itself* was incomplete or wrong — something you
+     only learned by actually building it, not a code/design/UX defect —
+     → `discovery`. Say plainly in `verification-report.md` what you
+     learned and what already exists, so Delivery Planner refines from
+     there instead of re-discovering it.
 
 A passing automated + conformance + hygiene check is necessary but not
 sufficient — final `done` still needs a human to accept the

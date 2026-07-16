@@ -41,6 +41,17 @@ If Discovery turns up a system or a shared term not yet captured in
 addition in `knowledge/log.md` — future Discoveries shouldn't have to
 re-derive it.
 
+**Re-entering Discovery from a failed `verification`:** this isn't a fresh
+start. Read `verification-report.md` (what it learned and what already
+exists), `implementation-log.md`, and the actual code state before touching
+`discovery.md` — don't re-derive what implementation already found. Update
+`discovery.md` to reflect it, and be explicit in the revised `requirements.md`
+about whether the gap needs the requirement done **differently** (the
+original approach doesn't work, replace it) or **additionally** (the
+original approach was fine but incomplete, extend it) — that distinction is
+what UX/Architecture need downstream to know how much of their prior work
+still stands.
+
 ## Requirement Draft (`requirements.md`)
 Given `discovery.md`, write requirements classified per BABOK:
 - **Business requirement**: the one-sentence "why" — what outcome this serves.

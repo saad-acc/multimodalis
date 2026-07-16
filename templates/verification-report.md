@@ -23,7 +23,10 @@
 
 ## Verdict
 pass → `done` (pending human acceptance)
-fail → rework target: `implementation` | `architecture_input` | `ux_input`
+fail → rework target: `implementation` | `architecture_input` | `ux_input` | `discovery`
+
+If target is `discovery`: what was learned, and what already exists, so
+Delivery Planner refines instead of re-discovering it from scratch.
 
 ## Human acceptance
 **Accepted by:**

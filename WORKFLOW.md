@@ -42,6 +42,7 @@ stateDiagram-v2
     Verification --> Done: passed + accepted
     Verification --> ArchitectureInput: design conflict found
     Verification --> UXInput: UX conflict found
+    Verification --> Discovery: requirement/scope gap found
 
     Discovery --> Blocked
     RequirementDraft --> Blocked
@@ -83,7 +84,7 @@ against it, not just an optional escape hatch.
 | `ArchitectureInput` | Solution Architect | `requirements.md`, `ux-spec.md`, `knowledge/decisions/`, `knowledge/patterns/` (tag `architecture`), `knowledge/anti-patterns/` | `architecture.md` | Components, data model, integration points, risks all named; conforms to accepted decisions or explicitly proposes superseding one; doesn't re-propose a known anti-pattern | `ImplementationPlan` |
 | `ImplementationPlan` | Delivery Planner | `architecture.md`, `ux-spec.md` | `implementation-plan.md` | Ordered task list with dependencies; each task traces to a requirement | `Implementation` |
 | `Implementation` | Implementer | `implementation-plan.md` | code changes, `implementation-log.md` | All planned tasks either done or explicitly re-scoped | `Verification` |
-| `Verification` | Implementer (self-check) | code changes, `architecture.md`, `ux-spec.md`, `knowledge/decisions/`, `knowledge/anti-patterns/` | `verification-report.md` | Build/tests/lint pass **and** report shows conformance to architecture + UX spec + accepted project decisions **and** documentation hygiene checklist complete (see below) **and** human accepts | `Done`, or back to `Implementation`/`ArchitectureInput`/`UXInput` on failure |
+| `Verification` | Implementer (self-check) | code changes, `architecture.md`, `ux-spec.md`, `knowledge/decisions/`, `knowledge/anti-patterns/` | `verification-report.md` | Build/tests/lint pass **and** report shows conformance to architecture + UX spec + accepted project decisions **and** documentation hygiene checklist complete (see below) **and** human accepts | `Done`, or back to `Implementation`/`ArchitectureInput`/`UXInput`/`Discovery` on failure |
 | `Blocked` | Orchestrator (routing only) | `clarifications.md` | updated `clarifications.md` | Human has answered the open question | `resume_state` |
 | `Done` | Orchestrator (closeout only) | `verification-report.md`'s hygiene checklist | closing `item.yaml` history entry | Hygiene checklist confirmed complete | terminal |
 
@@ -92,6 +93,7 @@ against it, not just an optional escape hatch.
 - `Verification` failing tests/build/lint → back to `Implementation` (same plan, fix the code).
 - `Verification` finding the code doesn't match the plan because the **plan** was wrong architecturally → back to `ArchitectureInput`.
 - `Verification` finding a UX mismatch (flow doesn't match spec, or spec was wrong) → back to `UXInput`.
+- `Verification` finding the **requirement/scope itself** was incomplete or wrong — not a code, design, or UX defect, but something implementation revealed that means the original ask needs rethinking → back to `Discovery`. Delivery Planner re-examines with `implementation-log.md`, `verification-report.md`, and the actual code state in hand, and refines what's needed — done differently, or additionally — given what already exists. This re-enters the normal forward path (`Discovery` → `RequirementDraft` → `BusinessClarification`), so the human signs off on the revised requirement before anyone re-designs against it.
 - `BusinessClarification` rejecting the draft → back to `RequirementDraft`.
 - Every backward transition appends a note to `item.yaml`'s history — never silently overwrite the previous artifact version, append a new one.
 
