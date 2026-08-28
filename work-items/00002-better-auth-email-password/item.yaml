@@ -1,0 +1,15 @@
+id: "00002-better-auth-email-password"
+title: "Assess swapping current auth to Better Auth (email/password)"
+status: discovery
+owner: delivery-planner
+resume_state: ""
+blocked_question: ""
+history:
+  - timestamp: 2026-08-28T23:45:00Z
+    agent: orchestrator
+    from_status: requested
+    to_status: discovery
+    note: Intake from human request; work item created; status discovery.
+links:
+  pr: ""
+  branch: "cursor/better-auth-assessment-5848"
