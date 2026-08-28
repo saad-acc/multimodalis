@@ -20,3 +20,4 @@ that one item.
 * [Anti-patterns](anti-patterns/) - approaches already tried and rejected, and why
 * [Domain Concepts](domain/) - shared vocabulary / glossary
 * [Components](components/) - inventory of existing systems/modules
+* [Features](features/) - live-verifiable map of user-facing behavior, plus the verification harness

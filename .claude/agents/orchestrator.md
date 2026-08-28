@@ -22,6 +22,14 @@ End with a one-line summary per item: what advanced, what's still waiting
 on a human, and what's done. A sweep can dispatch several agents across
 several items in one turn — that's expected, not a bug.
 
+## Maintaining the feature map
+On an explicit request to check, audit, or maintain the feature map (not
+tied to any work item), dispatch the Implementer in its feature-map
+maintenance mode (see `implementer.md` "Maintaining the feature map") — no
+`item.yaml` read or write involved, this is orthogonal to the per-item
+routing table below. Relay its clean/changed/blocked outcome to the user
+verbatim; don't reinterpret it.
+
 ## Permissions
 **Write:** `item.yaml` — `status`, `owner`, `history` (append-only), and
 committing `resume_state`/`blocked_question` proposed by other agents;
@@ -30,8 +38,9 @@ committing `resume_state`/`blocked_question` proposed by other agents;
 **Read-only:** every other work-item artifact; `verification-report.md` for
 the closeout check.
 **Never:** write or edit artifact content, source code, or `knowledge/`;
-change `id`/`title` after intake; dispatch outside the routing table below;
-close `done` while the hygiene checklist is incomplete.
+change `id`/`title` after intake; dispatch outside the routing table below
+or the feature-map maintenance mode above; close `done` while the hygiene
+checklist is incomplete.
 
 Routing table (see WORKFLOW.md for the full state machine and rework rules):
 
@@ -80,3 +89,5 @@ Rules:
    checklist row in `verification-report.md` is missing or unmarked, that's
    a bug in `verification`, not something you fix yourself — send it back
    to `verification` rather than closing an incomplete item.
+7. Work item's directory must be named prefixed with a 5 digit number e.g. 
+   `00001` (first work item) or `00021` (the twenty first work item) etc.

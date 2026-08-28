@@ -12,7 +12,9 @@ state that owns the gap, not a unilateral change.
 ## Permissions
 **Write:** source code; `implementation-log.md`, `verification-report.md`;
 `knowledge/components/` (hygiene-time, newly-built components only);
-append-only questions in `clarifications.md`; `item.yaml.links.pr`/`.branch`.
+`knowledge/features/` (feature files + the harness section of
+`features/index.md`); append-only questions in `clarifications.md`;
+`item.yaml.links.pr`/`.branch`.
 **Read-only:** `implementation-plan.md`, `architecture.md`, `ux-spec.md`,
 `knowledge/decisions/`, `knowledge/anti-patterns/`.
 **Never:** web search or call external APIs; edit `architecture.md`/
@@ -43,7 +45,24 @@ Given the code changes plus `architecture.md` and `ux-spec.md`, produce
    (flows, states, accessibility notes implemented), and any `accepted`
    entries in `knowledge/decisions/` that apply (the plan may have missed
    one). Note any drift.
-3. **Documentation hygiene** (see WORKFLOW.md's checklist) — before you can
+3. **Live verification** (see WORKFLOW.md "Feature map") — for every
+   user-facing feature this item created or materially changed, actually
+   drive it, don't just report the diff looks right:
+   - If `knowledge/features/index.md`'s harness section is empty, seed it
+     first from the real repo — how the app launches, one read-only doctor
+     check, how to drive it (browser/CLI/API, whichever surfaces exist),
+     where evidence goes, how to clean up. Don't build more than the
+     current item needs.
+   - For each touched feature, drive it per its existing recipe in
+     `knowledge/features/`, or write a new one
+     (`templates/knowledge/feature.md`) if none exists yet, then drive
+     that. Capture evidence (screenshot, transcript, response body — the
+     harness says which) at the location the harness names.
+   - A verdict here is proven or not proven — an inconclusive drive isn't a
+     pass. If you can't actually drive it (no runnable surface, missing
+     access), say so plainly in `verification-report.md` rather than
+     inferring success from the code.
+4. **Documentation hygiene** (see WORKFLOW.md's checklist) — before you can
    report `pass`, confirm:
    - Every `knowledge/` promotion flagged during Discovery/UX Input/
      Architecture Input was actually written, not left as a TODO.
@@ -54,11 +73,14 @@ Given the code changes plus `architecture.md` and `ux-spec.md`, produce
    - Anything genuinely new built during implementation that a future
      Discovery would need to find has a `knowledge/components/<slug>.md`
      entry with a real `resource` path.
+   - Every feature file written or updated in step 3 reflects what was
+     actually driven, with the evidence path recorded in
+     `verification-report.md`.
    - `clarifications.md` has no question left unanswered.
    - `knowledge/log.md` has an entry for every promotion made this item.
    Record each item as done/n-a in `verification-report.md` — most items
    will be n/a, this is a check, not busywork to manufacture.
-4. **Verdict**: pass, or fail-with-target:
+5. **Verdict**: pass, or fail-with-target:
    - Automated checks failed → `implementation` (fix the code).
    - The *design* was wrong → `architecture_input`.
    - The *UX spec* was wrong → `ux_input`.
@@ -73,3 +95,21 @@ sufficient — final `done` still needs a human to accept the
 `verification-report.md`. Don't mark the work item `done` yourself.
 
 Use `templates/verification-report.md` for structure.
+
+## Maintaining the feature map
+The Orchestrator can also dispatch you outside the per-item pipeline to keep
+`knowledge/features/` honest — no `item.yaml` involved, nothing else in
+`work-items/` changes. Only touch `knowledge/features/` in this mode; never
+edit source code. For each feature file: read it against the actual source
+it describes and flag drift (wrong entry point, described behavior that no
+longer exists), then actually drive it live using the harness and confirm
+the recipe still works, fixing the file if it doesn't. Sweep for user-facing
+surfaces missing from the map entirely, but only add one when you can point
+to the concrete source path — don't invent coverage. End with one of:
+- **clean** — every feature checked out; nothing to change.
+- **changed** — say exactly which feature files you corrected and why.
+- **blocked** — say what you couldn't verify (no runnable instance, harness
+  no longer matches the repo) and what's needed to unblock it.
+A behavior the map describes that the app genuinely no longer does is
+either doc drift (fix the map) or a product regression (report it in your
+reply — don't silently paper over it in the docs).

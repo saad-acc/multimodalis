@@ -84,7 +84,7 @@ against it, not just an optional escape hatch.
 | `ArchitectureInput` | Solution Architect | `requirements.md`, `ux-spec.md`, `knowledge/decisions/`, `knowledge/patterns/` (tag `architecture`), `knowledge/anti-patterns/` | `architecture.md` | Components, data model, integration points, risks all named; conforms to accepted decisions or explicitly proposes superseding one; doesn't re-propose a known anti-pattern | `ImplementationPlan` |
 | `ImplementationPlan` | Delivery Planner | `architecture.md`, `ux-spec.md` | `implementation-plan.md` | Ordered task list with dependencies; each task traces to a requirement | `Implementation` |
 | `Implementation` | Implementer | `implementation-plan.md` | code changes, `implementation-log.md` | All planned tasks either done or explicitly re-scoped | `Verification` |
-| `Verification` | Implementer (self-check) | code changes, `architecture.md`, `ux-spec.md`, `knowledge/decisions/`, `knowledge/anti-patterns/` | `verification-report.md` | Build/tests/lint pass **and** report shows conformance to architecture + UX spec + accepted project decisions **and** documentation hygiene checklist complete (see below) **and** human accepts | `Done`, or back to `Implementation`/`ArchitectureInput`/`UXInput`/`Discovery` on failure |
+| `Verification` | Implementer (self-check) | code changes, `architecture.md`, `ux-spec.md`, `knowledge/decisions/`, `knowledge/anti-patterns/`, `knowledge/features/` | `verification-report.md` | Build/tests/lint pass **and** report shows conformance to architecture + UX spec + accepted project decisions **and** every user-facing feature touched was actually driven live per its `knowledge/features/` recipe (not self-reported) **and** documentation hygiene checklist complete (see below) **and** human accepts | `Done`, or back to `Implementation`/`ArchitectureInput`/`UXInput`/`Discovery` on failure |
 | `Blocked` | Orchestrator (routing only) | `clarifications.md` | updated `clarifications.md` | Human has answered the open question | `resume_state` |
 | `Done` | Orchestrator (closeout only) | `verification-report.md`'s hygiene checklist | closing `item.yaml` history entry | Hygiene checklist confirmed complete | terminal |
 
@@ -119,6 +119,7 @@ knowledge/                 # persistent, project-wide — see "Project-level kno
   anti-patterns/
   domain/
   components/
+  features/                # feature map + verification harness — see "Feature map" below
 templates/                 # blank template per artifact + per knowledge concept type
   knowledge/
 .claude/agents/
@@ -140,11 +141,12 @@ markdown files with YAML frontmatter, no schema registry, readable with
 `cat`, diffable in git.
 
 Each concept file is one markdown doc with a required `type` field
-(`Architecture Decision`, `Pattern`, `Anti-pattern`, `Domain Concept`, or
-`Component`), optional `tags`/`description`/`resource`/`timestamp`, and a
-free-form body. `index.md` in each subdirectory gives progressive
-disclosure (list what exists before opening any one file); `log.md` at the
-bundle root gives a chronological history of what changed and why.
+(`Architecture Decision`, `Pattern`, `Anti-pattern`, `Domain Concept`,
+`Component`, or `Feature`), optional `tags`/`description`/`resource`/
+`timestamp`, and a free-form body. `index.md` in each subdirectory gives
+progressive disclosure (list what exists before opening any one file);
+`log.md` at the bundle root gives a chronological history of what changed
+and why.
 
 **Read duty** — before proposing anything, an agent checks the categories
 relevant to its state (see the "Reads" column above): Delivery Planner
@@ -164,6 +166,10 @@ it?* If yes:
 - A reusable UX or architecture approach → new `patterns/<slug>.md`.
 - A new shared term → new `domain/<slug>.md`.
 - A new system/module → new `components/<slug>.md`.
+- A user-facing feature that's new, or changed enough that its old
+  `features/` recipe would no longer prove it works → new/updated
+  `features/<slug>.md` (see "Feature map" below — this one is written
+  during `Verification`, not earlier, since it has to be proven live first).
 
 If not, it stays local to the work item's own artifact — most decisions
 are just that decision, not a rule for everything after it.
@@ -175,6 +181,33 @@ overturning settled architecture affects work beyond the current item —
 raises `blocked` for human sign-off rather than deciding alone.
 
 Every write appends one entry to `knowledge/log.md`.
+
+### Feature map (`knowledge/features/`)
+
+Automated tests and a conformance diff prove the code matches the plan —
+neither proves a user can actually do the thing. `knowledge/features/` is
+the maintained, live-verifiable inventory that closes that gap: one file
+per user-facing feature (`templates/knowledge/feature.md` — `Sub-features`,
+`How to get to it (user POV)`, `Driving it with <harness>`, `Gotchas`), plus
+a harness section in `features/index.md` (launch, one read-only doctor
+check, how to drive the app, where evidence lands, cleanup) that every
+feature file's recipe refers back to instead of restating.
+
+- **Seeding the harness**: the first `Verification` that needs to drive a
+  real user-facing feature and finds `features/index.md`'s harness section
+  empty fills it in from the actual repo (how the app starts, how to tell
+  it's healthy, how to drive it programmatically) — see `implementer.md`.
+  Don't build this speculatively before any item needs it.
+- **Driving, not self-reporting**: during `Verification`, every feature the
+  work item created or materially changed gets actually driven per its
+  recipe (or a newly-seeded one), with evidence captured at the location
+  the harness names. A verdict is proven or it isn't — an inconclusive
+  drive is not a pass.
+- **Keeping it honest**: the map rots as the app changes. The Orchestrator
+  can dispatch a standalone feature-map maintenance pass to the Implementer
+  — not tied to any one work item's status — that checks each feature file
+  against source, drives it live, and fixes drift. See orchestrator.md
+  "Maintaining the feature map."
 
 ### Documentation hygiene checklist (part of `Verification`, before `Done`)
 
@@ -199,6 +232,10 @@ Implementer can report `pass`, it confirms, and records in
    unanswered for this item.
 5. **`knowledge/log.md` entries exist** for every promotion made anywhere in
    this item's lifecycle.
+6. **Feature map current** — every user-facing feature this item created or
+   materially changed has a `knowledge/features/<slug>.md` entry that was
+   actually driven live this item (see "Feature map" above), not just
+   written from the diff.
 
 This is a checklist, not new content to author from scratch — most items
 touch zero or one of these. The Orchestrator's only job at `Done` is to
@@ -230,3 +267,7 @@ Because a spawned subagent generally cannot itself spawn subagents, the
 Orchestrator role is meant to be run by the **top-level session** (guided by
 `orchestrator.md` below) — not invoked as a nested subagent — unless your
 Claude Code setup grants the `Task` tool to custom agents.
+
+`knowledge/features/` maintenance is a standalone Orchestrator mode, not a
+row in this table — it isn't tied to any one work item's status. See
+orchestrator.md "Maintaining the feature map."
