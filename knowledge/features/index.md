@@ -8,15 +8,40 @@ pass keeps honest as the app changes.
 
 ## Harness
 
-*Not yet seeded.* The first work item whose `verification` needs to drive a
-real user-facing feature fills this section in (see `implementer.md`'s
-Verification step): how to launch the app for verification, one read-only
-doctor check, how to drive it (browser/CLI/API — whichever surfaces exist),
-where evidence gets captured, and how to clean up. Once filled in, every
-feature file's "Driving it with `<harness>`" section refers back to these
-conventions instead of restating them.
+**Launch (local stub auth)**
+
+```bash
+docker compose up --build
+# App: http://localhost:8080
+# Default AUTH_MODE=stub — any non-empty email+password, or set STUB_EMAIL/STUB_PASSWORD
+```
+
+**Doctor check (read-only)**
+
+```bash
+curl -sS -o /dev/null -w '%{http_code}\n' 'http://localhost:8080/index.php?page=login'
+# Expect: 200
+```
+
+**How to drive**
+
+- Primary: HTTP/`curl` (session cookies via `-c`/`-b`) against localhost:8080.
+- Optional: browser at the same URLs.
+- Login POST: `POST /api/check_login.php` with form fields `email`, `password`.
+- Pages: `/index.php?page=login`, `/index.php?page=tariff_query`.
+
+**Evidence location**
+
+`knowledge/features/evidence/<work-item-id>/` — HTML bodies, response headers,
+and short command logs from the verification drive (not secrets).
+
+**Cleanup**
+
+```bash
+docker compose down
+```
 
 ## Features
-*None captured yet.* Each work item's `verification` adds or updates one
-entry here for any user-facing feature it created or changed materially
-enough that the old recipe would no longer prove it works.
+
+- [Login (stub / session)](login.md) — unauthenticated login screen + check_login
+- [Tarifabfrage landing (chrome)](tarifabfrage-landing.md) — post-login shell, stubbed search

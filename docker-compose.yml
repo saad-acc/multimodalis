@@ -1,0 +1,42 @@
+services:
+  app:
+    build: .
+    ports:
+      - "${APP_PORT:-8080}:80"
+    environment:
+      APP_ENV: local
+      AUTH_MODE: ${AUTH_MODE:-stub}
+      STUB_EMAIL: ${STUB_EMAIL:-}
+      STUB_PASSWORD: ${STUB_PASSWORD:-}
+      # Optional stub gate: set STUB_EMAIL / STUB_PASSWORD in .env or the shell
+      DB_DSN_MODE: ${DB_DSN_MODE:-tcp}
+      DB_HOST: ${DB_HOST:-127.0.0.1}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_NAME: ${DB_NAME:-bestmodal}
+      DB_USER: ${DB_USER:-app}
+      DB_PASSWORD: ${DB_PASSWORD:-}
+      INSTANCE_CONNECTION_NAME: ${INSTANCE_CONNECTION_NAME:-PROJECT:REGION:INSTANCE}
+      DB_USERS_TABLE: ${DB_USERS_TABLE:-}
+    volumes:
+      - ./public:/var/www/html/public
+    # For AUTH_MODE=db against host Auth Proxy (127.0.0.1:3306), use:
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    # and set DB_HOST=host.docker.internal
+
+  # Optional local MySQL fallback (not primary): docker compose --profile mysql up --build
+  mysql:
+    profiles: ["mysql"]
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: bestmodal
+      MYSQL_USER: app
+      MYSQL_PASSWORD: localdev
+      MYSQL_ROOT_PASSWORD: localroot
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:

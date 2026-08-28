@@ -1,0 +1,12 @@
+HTTP/1.1 200 OK
+Date: Fri, 28 Aug 2026 21:49:24 GMT
+Server: Apache/2.4.68 (Debian)
+X-Powered-By: PHP/8.3.33
+Set-Cookie: PHPSESSID=50b8b6c38cc717d6fefef4f4cdbb59e1; path=/; HttpOnly; SameSite=Lax
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Vary: Accept-Encoding
+Content-Length: 4267
+Content-Type: text/html; charset=UTF-8
+

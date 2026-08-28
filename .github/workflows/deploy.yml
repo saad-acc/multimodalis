@@ -1,0 +1,160 @@
+# Deploy Multimodalis PHP app to Cloud Run on tag v0.0.1.
+#
+# GitHub configuration (same pattern as ratecardwiz):
+#   Secrets:
+#     GCP_SA_KEY          — deployer SA JSON content
+#   Variables:
+#     PROJECT_ID          — bestmodal-492819
+#     REGION              — europe-west1
+#     ENVIRONMENT         — sandbox
+#     ARTIFACT_REGISTRY_REPO — multimodalis (created by this workflow if missing)
+#
+# First deploy uses AUTH_MODE=stub (Cloud SQL instance deferred).
+
+name: Deploy to Cloud Run
+
+on:
+  push:
+    tags:
+      - "v0.0.1"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to deploy (manual runs)"
+        required: true
+        type: string
+        default: "manual"
+
+env:
+  PROJECT_ID: ${{ vars.PROJECT_ID || 'bestmodal-492819' }}
+  REGION: ${{ vars.REGION || 'europe-west1' }}
+  ENVIRONMENT: ${{ vars.ENVIRONMENT || 'sandbox' }}
+  AR_REPO: ${{ vars.ARTIFACT_REGISTRY_REPO || 'multimodalis' }}
+  SERVICE: multimodalis
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Resolve names
+        id: meta
+        run: |
+          PROJECT_ID="$(echo -n "${PROJECT_ID}" | tr -d '[:space:]')"
+          REGION="$(echo -n "${REGION}" | tr -d '[:space:]')"
+          ENVIRONMENT="$(echo -n "${ENVIRONMENT}" | tr -d '[:space:]')"
+          AR_REPO="$(echo -n "${AR_REPO}" | tr -d '[:space:]')"
+          echo "PROJECT_ID=${PROJECT_ID}" >> "$GITHUB_ENV"
+          echo "REGION=${REGION}" >> "$GITHUB_ENV"
+          echo "ENVIRONMENT=${ENVIRONMENT}" >> "$GITHUB_ENV"
+          echo "AR_REPO=${AR_REPO}" >> "$GITHUB_ENV"
+          gcloud config set project "${PROJECT_ID}"
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            TAG="${{ github.event.inputs.tag }}"
+          else
+            TAG="${GITHUB_REF_NAME}"
+          fi
+          IMAGE="${REGION}-docker.pkg.dev/${PROJECT_ID}/${AR_REPO}/app"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          echo "image=${IMAGE}" >> "$GITHUB_OUTPUT"
+
+      - name: Enable required APIs
+        run: |
+          gcloud services enable \
+            run.googleapis.com \
+            artifactregistry.googleapis.com \
+            cloudbuild.googleapis.com \
+            iam.googleapis.com \
+            --project="${PROJECT_ID}"
+
+      - name: Ensure Artifact Registry repository
+        run: |
+          if ! gcloud artifacts repositories describe "${AR_REPO}" \
+            --location="${REGION}" \
+            --project="${PROJECT_ID}" >/dev/null 2>&1; then
+            gcloud artifacts repositories create "${AR_REPO}" \
+              --repository-format=docker \
+              --location="${REGION}" \
+              --description="Multimodalis PHP app images" \
+              --project="${PROJECT_ID}"
+          fi
+
+      - name: Build and push image
+        run: |
+          IMAGE="${{ steps.meta.outputs.image }}"
+          TAG="${{ steps.meta.outputs.tag }}"
+          BUILD_ID="$(gcloud builds submit \
+            --project="${PROJECT_ID}" \
+            --tag "${IMAGE}:${TAG}" \
+            --async \
+            --format='value(id)' \
+            .)"
+          echo "Cloud Build id=${BUILD_ID}"
+          for _ in $(seq 1 180); do
+            STATUS="$(gcloud builds describe "${BUILD_ID}" \
+              --project="${PROJECT_ID}" \
+              --format='value(status)')"
+            echo "status=${STATUS}"
+            case "${STATUS}" in
+              SUCCESS)
+                break
+                ;;
+              FAILURE|INTERNAL_ERROR|TIMEOUT|CANCELLED|EXPIRED)
+                echo "Cloud Build failed: ${STATUS}"
+                gcloud builds describe "${BUILD_ID}" --project="${PROJECT_ID}" \
+                  --format='yaml(status,statusDetail,logUrl)' || true
+                exit 1
+                ;;
+              *)
+                sleep 5
+                ;;
+            esac
+          done
+          STATUS="$(gcloud builds describe "${BUILD_ID}" \
+            --project="${PROJECT_ID}" \
+            --format='value(status)')"
+          if [[ "${STATUS}" != "SUCCESS" ]]; then
+            echo "Timed out waiting for Cloud Build (last status=${STATUS})"
+            exit 1
+          fi
+          gcloud artifacts docker tags add \
+            "${IMAGE}:${TAG}" \
+            "${IMAGE}:latest" \
+            --quiet || true
+
+      - name: Deploy to Cloud Run
+        run: |
+          IMAGE="${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}"
+          # AUTH_MODE=stub until Cloud SQL instance + user schema are wired.
+          gcloud run deploy "${SERVICE}" \
+            --project="${PROJECT_ID}" \
+            --region="${REGION}" \
+            --image="${IMAGE}" \
+            --platform=managed \
+            --port=80 \
+            --allow-unauthenticated \
+            --labels="environment=${ENVIRONMENT}" \
+            --set-env-vars="APP_ENV=prod,AUTH_MODE=stub,ENVIRONMENT=${ENVIRONMENT}" \
+            --quiet
+
+      - name: Print service URL
+        run: |
+          URL="$(gcloud run services describe "${SERVICE}" \
+            --project="${PROJECT_ID}" \
+            --region="${REGION}" \
+            --format='value(status.url)')"
+          echo "Cloud Run URL: ${URL}"
+          echo "Login: AUTH_MODE=stub (any non-empty email/password until DB auth is wired)."

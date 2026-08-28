@@ -1,0 +1,13 @@
+HTTP/1.1 302 Found
+Date: Fri, 28 Aug 2026 21:49:26 GMT
+Server: Apache/2.4.68 (Debian)
+X-Powered-By: PHP/8.3.33
+Set-Cookie: PHPSESSID=ac8f53fa76e3d90c55d17ed9457e9172; path=/; HttpOnly; SameSite=Lax
+Expires: Thu, 19 Nov 1981 08:52:00 GMT
+Cache-Control: no-store, no-cache, must-revalidate
+Pragma: no-cache
+Set-Cookie: PHPSESSID=5e4eb44c10c8fb130ec08000ab1b9580; path=/; HttpOnly; SameSite=Lax
+Location: /index.php?page=tariff_query
+Content-Length: 0
+Content-Type: text/html; charset=UTF-8
+

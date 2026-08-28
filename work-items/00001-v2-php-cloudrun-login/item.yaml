@@ -1,0 +1,65 @@
+id: "00001-v2-php-cloudrun-login"
+title: "v2 PHP app: login + first page, Cloud Run, Cloud SQL, tag deploy"
+status: verification
+owner: implementer
+resume_state: ""
+blocked_question: ""
+history:
+  - timestamp: 2026-08-28T21:13:00Z
+    agent: orchestrator
+    from_status: requested
+    to_status: discovery
+    note: Intake from human request; work item created; status discovery.
+  - timestamp: 2026-08-28T21:20:00Z
+    agent: delivery-planner
+    from_status: discovery
+    to_status: requirement_draft
+    note: Wrote discovery.md from sandbox login inspect and empty-repo inventory.
+  - timestamp: 2026-08-28T21:22:00Z
+    agent: delivery-planner
+    from_status: requirement_draft
+    to_status: business_clarification
+    note: Wrote requirements.md; eight open questions in clarifications.md.
+  - timestamp: 2026-08-28T21:25:00Z
+    agent: orchestrator
+    from_status: business_clarification
+    to_status: business_clarification
+    note: Human answers recorded for Q2–Q7; Q1 login capture in progress; Q8 awaiting re-explain.
+  - timestamp: 2026-08-28T21:28:00Z
+    agent: orchestrator
+    from_status: business_clarification
+    to_status: business_clarification
+    note: Clicked Anmelden; landed tariff_query; Q8 real-host; requirements refreshed for sign-off.
+  - timestamp: 2026-08-28T21:35:00Z
+    agent: orchestrator
+    from_status: business_clarification
+    to_status: ux_input
+    note: Human approved requirements; Tarifabfrage basic; Cloud SQL instance deferred.
+  - timestamp: 2026-08-28T21:38:00Z
+    agent: ux-designer
+    from_status: ux_input
+    to_status: architecture_input
+    note: Wrote ux-spec.md for login and basic Tarifabfrage chrome.
+  - timestamp: 2026-08-28T21:42:00Z
+    agent: solution-architect
+    from_status: architecture_input
+    to_status: implementation_plan
+    note: Wrote architecture.md; Cloud Run Unix socket; GHA tag deploy; stub auth option.
+  - timestamp: 2026-08-28T21:45:00Z
+    agent: delivery-planner
+    from_status: implementation_plan
+    to_status: implementation
+    note: Wrote implementation-plan.md with 14 tasks.
+  - timestamp: 2026-08-28T21:55:00Z
+    agent: implementer
+    from_status: implementation
+    to_status: verification
+    note: Implemented PHP app, Compose, README, GHA tag deploy; docker smoke passed.
+  - timestamp: 2026-08-28T22:05:00Z
+    agent: implementer
+    from_status: verification
+    to_status: verification
+    note: Self-check pass pending human; live stub login proven; Cloud Run not yet deployed.
+links:
+  pr: ""
+  branch: "main"

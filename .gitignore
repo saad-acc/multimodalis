@@ -1,1 +1,26 @@
 .DS_Store
+
+# Local secrets and env (never commit)
+.env
+.env.local
+.env.*.local
+*.pem
+*.p12
+*.key
+credentials.json
+service-account*.json
+*-sa.json
+gcloud-service-key.json
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*~
+
+# PHP / Composer (if added later)
+/vendor/
+
+# Local evidence / scratch
+/tmp/
+*.log

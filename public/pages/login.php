@@ -1,0 +1,84 @@
+<?php
+declare(strict_types=1);
+
+$hostLabel = app_host_label();
+$loginError = isset($_GET['error']) && (string) $_GET['error'] === '1';
+$emailValue = isset($_GET['email']) ? (string) $_GET['email'] : '';
+?>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Multimodalis</title>
+  <link rel="icon" href="/images/multimodalis-logo.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="/assets/classic.css" rel="stylesheet">
+</head>
+<body class="page-login">
+  <main class="login-card" aria-labelledby="login-branding">
+    <div id="login-branding" tabindex="-1">
+      <img class="login-logo" src="/images/multimodalis-logo.png" alt="Multimodalis">
+    </div>
+    <p class="host-label" aria-label="Host"><?= htmlspecialchars($hostLabel, ENT_QUOTES, 'UTF-8') ?></p>
+
+    <?php if ($loginError): ?>
+      <div class="login-error" role="alert">„Anmeldung fehlgeschlagen.“</div>
+    <?php else: ?>
+      <div id="login-error-slot" role="alert" aria-live="polite" class="visually-hidden"></div>
+    <?php endif; ?>
+
+    <form id="login-form" method="post" action="/api/check_login.php" novalidate>
+      <div class="mb-3">
+        <label for="email" class="form-label">E-Mail-Adresse</label>
+        <input
+          type="email"
+          class="form-control<?= $loginError ? ' is-invalid' : '' ?>"
+          id="email"
+          name="email"
+          placeholder="E-Mail-Adresse"
+          autocomplete="username"
+          required
+          value="<?= htmlspecialchars($emailValue, ENT_QUOTES, 'UTF-8') ?>"
+          autofocus
+        >
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Passwort</label>
+        <input
+          type="password"
+          class="form-control<?= $loginError ? ' is-invalid' : '' ?>"
+          id="password"
+          name="password"
+          placeholder="Passwort"
+          autocomplete="current-password"
+          required
+          value=""
+        >
+      </div>
+      <button type="submit" class="btn btn-anmelden w-100 mb-3" id="btn-anmelden">
+        Anmelden
+      </button>
+      <div class="text-center">
+        <a class="forgot-link" href="/index.php?page=set_password">Passwort vergessen?</a>
+      </div>
+    </form>
+    <p class="login-footer">© 2026 Acceltra GmbH</p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById('login-form');
+      var btn = document.getElementById('btn-anmelden');
+      if (!form || !btn) return;
+      form.addEventListener('submit', function () {
+        if (!form.checkValidity()) return;
+        btn.disabled = true;
+        btn.setAttribute('aria-busy', 'true');
+        btn.textContent = 'Anmelden…';
+      });
+    })();
+  </script>
+</body>
+</html>

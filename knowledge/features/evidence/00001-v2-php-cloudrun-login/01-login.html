@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login Multimodalis</title>
+  <link rel="icon" href="/images/multimodalis-logo.png" type="image/png">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --bm-navy-start: #1a1a2e;
+      --bm-navy-end: #16213e;
+      --bm-green: #10B981;
+      --bm-green-dark: #059669;
+    }
+    body {
+      min-height: 100vh;
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: linear-gradient(160deg, var(--bm-navy-start), var(--bm-navy-end));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 420px;
+      background: #fff;
+      border-radius: 0.75rem;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+      padding: 2rem 2rem 1.5rem;
+    }
+    .login-logo {
+      display: block;
+      max-height: 52px;
+      width: auto;
+      margin: 0 auto 0.75rem;
+    }
+    .host-label {
+      text-align: center;
+      color: #4b5563;
+      font-size: 0.9rem;
+      margin-bottom: 1.25rem;
+    }
+    .btn-anmelden {
+      background-color: var(--bm-green);
+      border-color: var(--bm-green);
+      color: #111;
+      font-weight: 600;
+    }
+    .btn-anmelden:hover,
+    .btn-anmelden:focus {
+      background-color: var(--bm-green-dark);
+      border-color: var(--bm-green-dark);
+      color: #fff;
+    }
+    .btn-anmelden:focus-visible,
+    a:focus-visible,
+    .form-control:focus {
+      outline: 2px solid var(--bm-green-dark);
+      outline-offset: 2px;
+    }
+    .login-error {
+      color: #b91c1c;
+      font-size: 0.95rem;
+    }
+    .forgot-link {
+      color: var(--bm-green-dark);
+      text-decoration: none;
+    }
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
+    .login-footer {
+      text-align: center;
+      color: #6b7280;
+      font-size: 0.85rem;
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <main class="login-card" aria-labelledby="login-branding">
+    <div id="login-branding" tabindex="-1">
+      <img class="login-logo" src="/images/multimodalis-logo.png" alt="Multimodalis">
+    </div>
+    <p class="host-label" aria-label="Host">localhost:8080</p>
+
+          <div id="login-error-slot" role="alert" aria-live="polite" class="visually-hidden"></div>
+    
+    <form id="login-form" method="post" action="/api/check_login.php" novalidate>
+      <div class="mb-3">
+        <label for="email" class="form-label">E-Mail-Adresse</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          name="email"
+          placeholder="E-Mail-Adresse"
+          autocomplete="username"
+          required
+          value=""
+          autofocus
+        >
+      </div>
+      <div class="mb-3">
+        <label for="password" class="form-label">Passwort</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          name="password"
+          placeholder="Passwort"
+          autocomplete="current-password"
+          required
+          value=""
+        >
+      </div>
+      <button type="submit" class="btn btn-anmelden w-100 mb-3" id="btn-anmelden">
+        Anmelden
+      </button>
+      <div class="text-center">
+        <a class="forgot-link" href="/index.php?page=set_password">Passwort vergessen?</a>
+      </div>
+    </form>
+    <p class="login-footer">© 2026 Acceltra GmbH</p>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function () {
+      var form = document.getElementById('login-form');
+      var btn = document.getElementById('btn-anmelden');
+      if (!form || !btn) return;
+      form.addEventListener('submit', function () {
+        if (!form.checkValidity()) return;
+        btn.disabled = true;
+        btn.setAttribute('aria-busy', 'true');
+        btn.textContent = 'Anmelden…';
+      });
+    })();
+  </script>
+</body>
+</html>
