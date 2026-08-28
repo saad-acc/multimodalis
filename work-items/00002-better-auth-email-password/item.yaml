@@ -1,0 +1,25 @@
+id: "00002-better-auth-email-password"
+title: "Assess swapping current auth to Better Auth (email/password)"
+status: business_clarification
+owner: human
+resume_state: ""
+blocked_question: ""
+history:
+  - timestamp: 2026-08-28T23:45:00Z
+    agent: orchestrator
+    from_status: requested
+    to_status: discovery
+    note: Intake from human request; work item created; status discovery.
+  - timestamp: 2026-08-28T23:50:00Z
+    agent: delivery-planner
+    from_status: discovery
+    to_status: requirement_draft
+    note: Wrote discovery.md; Better Auth cannot drop into PHP auth.php; named integration options.
+  - timestamp: 2026-08-28T23:55:00Z
+    agent: delivery-planner
+    from_status: requirement_draft
+    to_status: business_clarification
+    note: Wrote draft requirements.md and nine clarification questions.
+links:
+  pr: ""
+  branch: "cursor/better-auth-assessment-5848"

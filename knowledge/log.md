@@ -4,6 +4,7 @@ Chronological record of additions/changes to `knowledge/`, newest first.
 Every agent that mints or edits a concept here appends one entry.
 
 ## 2026-08-28
+* **Creation**: Added [Better Auth](/domain/better-auth.md) — project meaning: Node/TS library, email/password first, OAuth later; work item `00002-better-auth-email-password`.
 * **Creation**: Added [Multimodalis PHP app (v2)](/components/multimodalis-php-app.md) — `public/` PHP login + Tarifabfrage; work item `00001-v2-php-cloudrun-login` verification.
 * **Update**: [Multimodalis delivery workflow](/components/multimodalis-workflow.md) — repo now also hosts the PHP app component.
 * **Creation**: Seeded feature harness + [Login](/features/login.md) + [Tarifabfrage landing](/features/tarifabfrage-landing.md); evidence under `features/evidence/00001-v2-php-cloudrun-login/`.
