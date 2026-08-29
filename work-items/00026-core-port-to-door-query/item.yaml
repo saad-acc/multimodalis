@@ -1,0 +1,33 @@
+id: "00026-core-port-to-door-query"
+title: "Core: port_to_door_view"
+status: requested
+owner: orchestrator
+resume_state: ""
+blocked_question: ""
+history:
+  - timestamp: 2026-08-28T23:34:00Z
+    agent: orchestrator
+    from_status: requested
+    to_status: discovery
+    note: Intake; piecemeal legacy migration program.
+  - timestamp: 2026-08-28T23:55:00Z
+    agent: delivery-planner
+    from_status: discovery
+    to_status: requirement_draft
+    note: Wrote discovery.md from legacy feature map and request.md.
+  - timestamp: 2026-08-28T23:56:00Z
+    agent: delivery-planner
+    from_status: requirement_draft
+    to_status: business_clarification
+    note: Wrote requirements.md draft; awaiting human sign-off.
+  - timestamp: 2026-08-29T00:31:00Z
+    agent: orchestrator
+    from_status: business_clarification
+    to_status: requested
+    note: Human rewind; keep artifacts; stay at requested until an item is picked.
+links:
+  pr: ""
+  branch: ""
+depends_on: ["00003-kernel-layout-nav-chrome", "00006-kernel-db-tenant-bootstrap"]
+module: Core
+legacy_slug: "port_to_door_view"

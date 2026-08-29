@@ -18,13 +18,18 @@ $chrome = '/index.php?page=tariff_query';
 </head>
 <body>
   <div class="app-shell">
+    <div class="app-slide" id="app-slide">
     <aside class="sidebar" id="sidebar" aria-label="Hauptnavigation">
       <div class="sidebar-brand">
-        <a href="<?= htmlspecialchars($chrome, ENT_QUOTES, 'UTF-8') ?>" title="Dashboard (Chrome)">
-          <img src="/images/multimodalis-logo.png" alt="Multimodalis">
+        <a class="sidebar-brand-link" href="<?= htmlspecialchars($chrome, ENT_QUOTES, 'UTF-8') ?>" title="Multimodalis">
+          <img src="/images/multimodalis-logo.png" alt="">
+          <span class="sidebar-brand-text">
+            <span class="name">Multimodalis</span>
+            <span class="tagline">Tariff Intelligence</span>
+          </span>
         </a>
-        <button type="button" class="btn-icon" id="btn-pin" aria-label="Seitenleiste anheften" aria-pressed="true">
-          <i class="bi bi-pin-angle-fill" aria-hidden="true"></i>
+        <button type="button" class="btn-icon" id="btn-pin" aria-label="Seitenleiste anheften" aria-pressed="true" title="Seitenleiste anheften">
+          <i class="bi bi-pin-angle-fill" aria-hidden="true" data-pin-icon></i>
         </button>
       </div>
       <nav class="sidebar-nav" aria-label="Anwendung">
@@ -204,26 +209,88 @@ $chrome = '/index.php?page=tariff_query';
         </span>
       </footer>
     </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
     (function () {
+      var KEY_PINNED = 'multimodalis.sidebarPinned';
+      var KEY_COLLAPSED = 'multimodalis.sidebarCollapsed';
       var toggle = document.getElementById('btn-sidebar-toggle');
       var pin = document.getElementById('btn-pin');
+      var pinIcon = pin ? pin.querySelector('[data-pin-icon]') : null;
+
+      function readFlag(key, fallback) {
+        try {
+          var v = localStorage.getItem(key);
+          if (v === null) return fallback;
+          return v === '1' || v === 'true';
+        } catch (e) {
+          return fallback;
+        }
+      }
+
+      function writeFlag(key, value) {
+        try {
+          localStorage.setItem(key, value ? '1' : '0');
+        } catch (e) { /* ignore */ }
+      }
+
+      function isCollapsed() {
+        return document.body.classList.contains('sidebar-collapsed');
+      }
+
+      function setCollapsed(collapsed) {
+        document.body.classList.toggle('sidebar-collapsed', collapsed);
+        if (toggle) {
+          toggle.setAttribute('aria-expanded', collapsed ? 'false' : 'true');
+        }
+        writeFlag(KEY_COLLAPSED, collapsed);
+      }
+
+      function setPinned(pinned) {
+        if (!pin) return;
+        pin.setAttribute('aria-pressed', pinned ? 'true' : 'false');
+        pin.setAttribute('aria-label', pinned ? 'Seitenleiste gelöst (klicken zum Anheften)' : 'Seitenleiste anheften');
+        pin.title = pinned ? 'Angeheftet — Seitenleiste bleibt geöffnet' : 'Nicht angeheftet — Einklappen erlaubt';
+        if (pinIcon) {
+          pinIcon.className = pinned ? 'bi bi-pin-angle-fill' : 'bi bi-pin-angle';
+        }
+        document.body.classList.toggle('sidebar-pinned', pinned);
+        writeFlag(KEY_PINNED, pinned);
+      }
+
+      var pinned = readFlag(KEY_PINNED, true);
+      var collapsed = readFlag(KEY_COLLAPSED, false);
+      if (pinned) collapsed = false;
+      setPinned(pinned);
+      setCollapsed(collapsed);
+
       if (toggle) {
         toggle.addEventListener('click', function () {
-          document.body.classList.toggle('sidebar-collapsed');
-          var expanded = !document.body.classList.contains('sidebar-collapsed');
-          toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+          if (isCollapsed()) {
+            setCollapsed(false);
+            return;
+          }
+          // Collapsing while pinned unpins, then collapses.
+          if (pin && pin.getAttribute('aria-pressed') === 'true') {
+            setPinned(false);
+          }
+          setCollapsed(true);
         });
       }
+
       if (pin) {
         pin.addEventListener('click', function () {
-          var pressed = pin.getAttribute('aria-pressed') === 'true';
-          pin.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+          var next = pin.getAttribute('aria-pressed') !== 'true';
+          setPinned(next);
+          if (next) {
+            setCollapsed(false);
+          }
         });
       }
+
       document.querySelectorAll('.hafen-chip, .kg-chip, .filter-toggle').forEach(function (el) {
         el.addEventListener('click', function () {
           var on = el.getAttribute('aria-pressed') === 'true';

@@ -1,7 +1,7 @@
 id: "00001-v2-php-cloudrun-login"
 title: "v2 PHP app: login + first page, Cloud Run, Cloud SQL, tag deploy"
-status: verification
-owner: implementer
+status: done
+owner: human
 resume_state: ""
 blocked_question: ""
 history:
@@ -60,6 +60,11 @@ history:
     from_status: verification
     to_status: verification
     note: Self-check pass pending human; live stub login proven; Cloud Run not yet deployed.
+  - timestamp: 2026-08-29T00:00:00Z
+    agent: orchestrator
+    from_status: verification
+    to_status: done
+    note: Human accepted 2026-08-29; hygiene checklist complete (all done/n/a); closed.
 links:
   pr: ""
   branch: "main"

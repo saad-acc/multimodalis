@@ -48,6 +48,18 @@ function db_pdo(): PDO
 }
 
 /**
+ * Connectivity check: SELECT 1 via db_pdo(). Does not touch users-table auth.
+ *
+ * @throws PDOException|RuntimeException on failure
+ */
+function db_ping(): bool
+{
+    $stmt = db_pdo()->query('SELECT 1');
+    $stmt->fetch();
+    return true;
+}
+
+/**
  * Look up password hash for an existing user row. Table/columns from config env.
  * Returns null if not found or table not configured.
  */

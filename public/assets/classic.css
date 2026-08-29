@@ -72,13 +72,45 @@ body.page-login {
   color: var(--color-text-primary);
 }
 
+#login-branding {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin: 0 auto 0.75rem;
+}
+
 .login-logo {
   display: block;
-  height: 56px;
-  width: 56px;
+  height: 48px;
+  width: 48px;
   object-fit: contain;
-  margin: 0 auto 0.75rem;
   border-radius: 0.75rem;
+  flex-shrink: 0;
+}
+
+.login-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+  text-align: left;
+}
+
+.login-brand-text .name {
+  font-family: var(--font-sans);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+}
+
+.login-brand-text .tagline {
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  white-space: nowrap;
 }
 
 .host-label {
@@ -157,39 +189,102 @@ body.page-login {
 
 /* ——— App shell Tarifabfrage (sandbox layout; classic colors/fonts) ——— */
 .app-shell {
-  display: flex;
   flex: 1;
   min-height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.app-slide {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  width: 100%;
+  min-height: 100vh;
+  transition: grid-template-columns 0.28s ease;
+}
+
+body.sidebar-collapsed .app-slide {
+  grid-template-columns: 0px minmax(0, 1fr);
 }
 
 .sidebar {
   width: 260px;
+  min-width: 0;
+  overflow: hidden;
   background: var(--color-surface-sidebar);
   color: var(--color-text-on-dark);
   display: flex;
   flex-direction: column;
-  flex-shrink: 0;
+  min-height: 100vh;
+  transform: translateX(0);
+  transition: transform 0.28s ease;
+  will-change: transform;
 }
 
 body.sidebar-collapsed .sidebar {
-  margin-left: -260px;
+  transform: translateX(-100%);
 }
 
 .sidebar-brand {
-  padding: 1rem;
+  padding: 0.85rem 0.75rem 0.85rem 1rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.2);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
+  min-height: 3.5rem;
 }
 
-.sidebar-brand img {
+.sidebar-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-width: 0;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+}
+
+.sidebar-brand-link img {
   height: 36px;
   width: 36px;
   object-fit: contain;
   border-radius: 0.5rem;
   background: #fff;
+  flex-shrink: 0;
+}
+
+.sidebar-brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.sidebar-brand-text .name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-brand-text .tagline {
+  font-size: 0.65rem;
+  font-weight: 500;
+  color: #94a3b8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#btn-pin[aria-pressed="true"] {
+  color: var(--color-brand-500);
+}
+
+#btn-pin[aria-pressed="false"] {
+  color: #94a3b8;
 }
 
 .sidebar-nav {
@@ -237,10 +332,10 @@ body.sidebar-collapsed .sidebar {
 }
 
 .content-wrap {
-  flex: 1;
+  min-width: 0;
+  width: auto;
   display: flex;
   flex-direction: column;
-  min-width: 0;
   background: var(--color-surface-muted);
 }
 

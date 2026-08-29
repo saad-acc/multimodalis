@@ -19,7 +19,11 @@ $emailValue = isset($_GET['email']) ? (string) $_GET['email'] : '';
 <body class="page-login">
   <main class="login-card" aria-labelledby="login-branding">
     <div id="login-branding" tabindex="-1">
-      <img class="login-logo" src="/images/multimodalis-logo.png" alt="Multimodalis">
+      <img class="login-logo" src="/images/multimodalis-logo.png" alt="">
+      <span class="login-brand-text">
+        <span class="name">Multimodalis</span>
+        <span class="tagline">Tariff Intelligence</span>
+      </span>
     </div>
     <p class="host-label" aria-label="Host"><?= htmlspecialchars($hostLabel, ENT_QUOTES, 'UTF-8') ?></p>
 

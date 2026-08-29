@@ -45,3 +45,4 @@ docker compose down
 
 - [Login (stub / session)](login.md) — unauthenticated login screen + check_login
 - [Tarifabfrage landing (chrome)](tarifabfrage-landing.md) — post-login shell, stubbed search
+- [Sandbox DB connectivity proof (Auth Proxy)](sandbox-db-connectivity.md) — `scripts/check-db-connection.php` SELECT 1; login stays stub

@@ -1,0 +1,69 @@
+id: "00005-cloudsql-sandbox-connection"
+title: "Connect local + Cloud Run to Cloud SQL sandbox MySQL"
+status: verification
+owner: human
+history:
+  - timestamp: 2026-08-29T00:00:00Z
+    agent: orchestrator
+    from_status: requested
+    to_status: discovery
+    note: Intake after 00001 acceptance; Cloud SQL sandbox connection (id 00005 — 00002–00004 already used by kernel items).
+  - timestamp: 2026-08-29T00:05:00Z
+    agent: delivery-planner
+    from_status: discovery
+    to_status: requirement_draft
+    note: Wrote discovery.md; Cloud SQL instance named; app AUTH_MODE ready; deploy still stub; open ops/credential questions listed.
+  - timestamp: 2026-08-29T00:10:00Z
+    agent: delivery-planner
+    from_status: requirement_draft
+    to_status: business_clarification
+    note: Wrote requirements.md draft; eight open questions unchanged in clarifications.md; awaiting human sign-off.
+  - timestamp: 2026-08-29T02:08:00Z
+    agent: orchestrator
+    from_status: business_clarification
+    to_status: requirement_draft
+    note: Human answers recorded in clarifications.md (2026-08-29); deferred DB login/Better Auth; Auth Proxy feasibility; GHA env sandbox; multimodalis-run SA; requirements rewrite for approval.
+  - timestamp: 2026-08-29T02:12:00Z
+    agent: delivery-planner
+    from_status: requirement_draft
+    to_status: ux_input
+    note: requirements.md approved (human 2026-08-29); scope Auth Proxy + GHA sandbox env; DB login/Cloud Run SQL attach deferred; skipped second BC (human already signed off).
+  - timestamp: 2026-08-29T02:15:00Z
+    agent: ux-designer
+    from_status: ux_input
+    to_status: architecture_input
+    note: Wrote ux-spec.md; no end-user UX change; login stays stub.
+  - timestamp: 2026-08-29T02:18:00Z
+    agent: solution-architect
+    from_status: architecture_input
+    to_status: implementation_plan
+    note: Wrote architecture.md; Auth Proxy TCP + GHA sandbox env + multimodalis-run; Cloud Run SQL attach and AUTH_MODE=db deferred.
+  - timestamp: 2026-08-29T02:22:00Z
+    agent: delivery-planner
+    from_status: implementation_plan
+    to_status: implementation
+    note: Wrote implementation-plan.md (8 tasks); live proof may block on secrets.
+  - timestamp: 2026-08-29T02:30:00Z
+    agent: implementer
+    from_status: implementation
+    to_status: blocked
+    note: Scaffolding done (env/docs/script/GHA sandbox env/multimodalis-run SA); live Auth Proxy SELECT 1 blocked on missing DB_NAME/DB_USER/DB_PASSWORD.
+  - timestamp: 2026-08-29T02:38:00Z
+    agent: orchestrator
+    from_status: blocked
+    to_status: implementation
+    note: Unblocked — SM secret bestmodal2-sandbox-database-url + DB_NAME=bestmodal2 / DB_USER=bestmodal; Auth Proxy SELECT 1 already proven; resume implementation (no password in history).
+  - timestamp: 2026-08-29T02:45:00Z
+    agent: implementer
+    from_status: implementation
+    to_status: verification
+    note: Tasks 1–8 done; SM sync script; GHA sandbox vars+DB_PASSWORD set; Auth Proxy SELECT 1 re-proven; no AUTH_MODE=db / no SQL attach.
+  - timestamp: 2026-08-29T02:50:00Z
+    agent: implementer
+    from_status: verification
+    to_status: verification
+    note: Self-check pass; verification-report.md complete; hygiene all done/n/a; awaiting human acceptance.
+links:
+  pr: ""
+  branch: ""
+depends_on: ["00001-v2-php-cloudrun-login"]

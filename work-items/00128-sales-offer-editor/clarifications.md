@@ -1,0 +1,11 @@
+# Clarifications
+
+Log every human touchpoint here, in order: business sign-off, and any
+`blocked` question/answer regardless of which state raised it.
+
+## [2026-08-29] — requirement_draft — [asked by: delivery-planner]
+**Question:** Confirm the Cloud Run image may ship modal’s Dompdf/`vendor/` for PDF, or ops requires a different generator while keeping the same PDF URL.
+
+**Answer:**
+
+**Decided by:**

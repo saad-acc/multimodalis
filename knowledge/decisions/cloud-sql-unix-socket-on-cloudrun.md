@@ -22,3 +22,4 @@ Deploy needs `--add-cloudsql-instances` (or equivalent) and a runtime SA with Cl
 
 # Citations
 [1] Work item: [00001-v2-php-cloudrun-login architecture](/work-items/00001-v2-php-cloudrun-login/architecture.md)
+[2] Work item: [00005-cloudsql-sandbox-connection architecture](/work-items/00005-cloudsql-sandbox-connection/architecture.md) — instance named; attach + Client role deferred with Better Auth / login; still the intended Cloud Run connector when enabled.
